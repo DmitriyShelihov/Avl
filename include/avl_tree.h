@@ -9,6 +9,7 @@ template <typename T> class Avl {
 		Avl* right = nullptr;
 		Avl* left = nullptr;
 		int height = 0;
+
 	public:
 		Avl(T value) : _value(value) {}
 		
@@ -117,6 +118,23 @@ template <typename T> class Avl {
 				return left->left_elem();
 		}
 		
+		T* find_element(T val){
+			int r = 0;
+			for(Avl* node = this; node != nullptr;){
+				r = compare(node->_value, val);
+				// std::cout << "comparing " << node->_value << " and " << val << " res: " << r << "\n";
+				switch (r)
+				{
+					case 0: return &(node->_value);	break;
+					case -1: node = node->right; break;
+					case 1: node = node->left; break;
+					default: std::cout << "error"; return nullptr; //error. aborting
+				}
+			}
+			// std::cout << "didn't found\n";
+			return nullptr;
+		}
+
 		void node_dump(int h) {
 			if (right != nullptr)
 				right->node_dump(h+1);
@@ -128,6 +146,8 @@ template <typename T> class Avl {
 			if (left != nullptr) 
 				left->node_dump(h+1);
 		}
+
+
 
 		void dump() {
 			std::cout << "Avl:\n";
