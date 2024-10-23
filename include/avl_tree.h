@@ -11,7 +11,6 @@ template <typename T> class Avl {
 		int height = 0;
 	public:
 		Avl(T value) : _value(value) {}
-		Avl() {}		//ctor
 		
 		void update_height() {
 			if (NODE_H(left) >= NODE_H(right)) {
