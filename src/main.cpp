@@ -4,6 +4,8 @@ void print_elem(int elem) {
 	std::cout << elem;
 }
 
+#include "avl_tree.h"
+
 int compare(int a, int b) {
 	if (a > b)
 		return 1;
@@ -12,15 +14,13 @@ int compare(int a, int b) {
 	return -1;
 }
 
-#include "avl_tree.h"
 
 int main() {
-	Avl<int> avl(0);
+	Avl<int> avl(0, compare);
 
 	for(int i = 1; i < 10; i ++){
 		avl.insert(i);
 	}
-
 	avl.dump();
 
 	int* j = avl.find_element(5);
