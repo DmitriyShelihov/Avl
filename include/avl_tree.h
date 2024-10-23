@@ -10,8 +10,9 @@ template <typename T> class Avl {
 		Avl* left = nullptr;
 		int height = 0;
 	public:
-		Avl(T value) : _value(value) {}  	//ctor
-
+		Avl(T value) : _value(value) {}
+		Avl() {}		//ctor
+		
 		void update_height() {
 			if (NODE_H(left) >= NODE_H(right)) {
 				height = NODE_H(left)+1;
@@ -65,7 +66,7 @@ template <typename T> class Avl {
 			}
 		}
 
-		void insert(T value) {
+		void insert(T value) { 
 			if (compare(_value, value) <= 0) {
 				if (right == nullptr) {
 					height = 1;
@@ -85,8 +86,10 @@ template <typename T> class Avl {
 		}
 		
 		void pop() {
-			if (NODE_H(this) == 0) {
-				delete this;
+			if (height == 0) {
+				delete &_value;
+				height = -1;
+				return;
 			} else if (NODE_H(left) == -1 && NODE_H(right) != -1) {
 				T save_elem = _value;
 				_value = right->_value;
@@ -116,15 +119,15 @@ template <typename T> class Avl {
 		}
 		
 		void node_dump(int h) {
-			if (this == nullptr) 
-				return;
-			right->node_dump(h+1);
+			if (right != nullptr)
+				right->node_dump(h+1);
 			for (int i = 0; i < h; ++i) {
 				std::cout << "          ";
 			}
 			print_elem(_value);
 			std::cout << "(" << height << ")\n";
-			left->node_dump(h+1);
+			if (left != nullptr) 
+				left->node_dump(h+1);
 		}
 
 		void dump() {

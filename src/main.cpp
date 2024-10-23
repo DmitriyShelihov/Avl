@@ -19,9 +19,7 @@ int main() {
 	avl.insert(5);
 	avl.insert(6);
 	avl.insert(4);
-	std::cout << avl.left_elem() << "\n";
 	avl.dump();
-	avl.pop();
 	avl.pop();
 	avl.dump();
 	return 0;
