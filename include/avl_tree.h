@@ -2,12 +2,17 @@
 
 #include <iostream>
 #include <functional>
+#include <list>
 #define NODE_H(x) (((x)==nullptr)?-1:((x)->height))
 
 
 template <typename T> class _Avl_node {
 	private:
-		T _value;
+		using ListIt = typename std::list<T>::iterator;
+		
+		ListIt _value;
+		std::list<T>* _datalist;
+
 		_Avl_node* right = nullptr;
 		_Avl_node* left = nullptr;
 		int height = 0;
@@ -19,34 +24,47 @@ template <typename T> class _Avl_node {
 		T left_elem();
 
 	public:
-		_Avl_node(T value) : _value(value) {}
+		_Avl_node(ListIt value, std::list<T>* datalist): _value(value), _datalist(datalist) {};
 		void pop();
-		void insert(T value, std::function<int(T, T)> compare_func);
-		T* find_element(T val, std::function<int(T, T)> compare_func);
+		void insert(ListIt value, std::function<int(T, T)> compare_func);
+		typename std::list<T>::iterator find_element(T val, std::function<int(T, T)> compare_func);
 		void node_dump(int h);
 		void dump();
 };
 
 template <typename T> class Avl{
 	private: 
-		_Avl_node<T>* tree;
+		using ListIt = typename std::list<T>::iterator;
+		_Avl_node<T>* tree = 0;
 		std::function<int(T, T)> _compare_func;
+		std::list<T> _data_list;
 
 	public:
-		Avl(T value, std::function<int(T, T)> compare_func): _compare_func(compare_func) 
-		{
-			tree = new _Avl_node(value);
-		};
+		Avl(T value, std::function<int(T, T)> compare_func): _compare_func(compare_func) {};
 		
 		void pop() {
 			tree->pop();
 		}
 
-		void insert(T value) {
-			tree->insert(value, _compare_func);
+		ListIt end(){
+			return _data_list.end();
 		}
 
-		T* find_element(T val) {
+		ListIt begin(){
+			return _data_list.begin();
+		}
+
+		void insert(T value) {
+			_data_list.push_front(value);
+			if(tree == nullptr) {
+				tree = new _Avl_node(_data_list.begin(), &_data_list);
+			}
+			else {
+				tree->insert(_data_list.begin(), _compare_func);
+			}
+		}
+
+		ListIt find(T val) {
 			return tree->find_element(val, _compare_func);
 		}
 
@@ -55,6 +73,10 @@ template <typename T> class Avl{
 		}
 
 		void dump() {
+			for(auto &x: _data_list){
+				std::cout << x << " ";
+			}
+			std::cout << '\n';
 			tree->dump();
 		}
 };
@@ -73,7 +95,7 @@ void _Avl_node<T>::update_height(){
 
 template <typename T>
 void _Avl_node<T>::left_rotation() {
-	T save_elem = _value;
+	ListIt save_elem = _value;
 	_value = right->_value;
 	right->_value = save_elem;
 
@@ -90,7 +112,7 @@ void _Avl_node<T>::left_rotation() {
 
 template <typename T>
 void _Avl_node<T>::right_rotation() {
-	T save_elem = _value;
+	ListIt save_elem = _value;
 	_value = left->_value;
 	left->_value = save_elem;
 
@@ -156,17 +178,17 @@ void _Avl_node<T>::pop() {
 }
 
 template <typename T>
-void _Avl_node<T>::insert(T value, std::function<int(T, T)> compare_func) { 
-	if (compare_func(_value, value) <= 0) {
+void _Avl_node<T>::insert(ListIt value, std::function<int(T, T)> compare_func) { 
+	if (compare_func(*_value, *value) <= 0) {
 		if (right == nullptr) {
 			height = 1;
-			right = new _Avl_node(value);
+			right = new _Avl_node(value, _datalist);
 		} else 
 			right->insert(value, compare_func);
 	} else {
 		if (left == nullptr) {
 			height = 1;
-			left = new _Avl_node(value);
+			left = new _Avl_node(value, _datalist);
 		} else 
 			left->insert(value, compare_func);
 	}
@@ -176,21 +198,21 @@ void _Avl_node<T>::insert(T value, std::function<int(T, T)> compare_func) {
 }
 
 template <typename T>
-T* _Avl_node<T>::find_element(T val, std::function<int(T, T)> compare_func){
+typename std::list<T>::iterator _Avl_node<T>::find_element(T val, std::function<int(T, T)> compare_func){
 	int r = 0;
 	for(_Avl_node* node = this; node != nullptr;){
-		r = compare_func(node->_value, val);
+		r = compare_func(*(node->_value), val);
 		// std::cout << "comparing " << node->_value << " and " << val << " res: " << r << "\n";
 		switch (r)
 		{
-			case 0: return &(node->_value);	break;
+			case 0: return node->_value;	break;
 			case -1: node = node->right; break;
 			case 1: node = node->left; break;
-			default: std::cout << "error"; return nullptr; //error. aborting
+			default: std::cout << "error"; return _datalist->end(); //error. aborting
 		}
 	}
 	// std::cout << "didn't found\n";
-	return nullptr;
+	return _datalist->end();
 }
 
 template <typename T>
@@ -207,7 +229,7 @@ void _Avl_node<T>::node_dump(int h) {
 	for (int i = 0; i < h; ++i) {
 		std::cout << "          ";
 	}
-	print_elem(_value);
+	print_elem(*_value);
 	std::cout << "(" << height << ")\n";
 	if (left != nullptr) 
 		left->node_dump(h+1);

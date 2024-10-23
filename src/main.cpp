@@ -23,8 +23,8 @@ int main() {
 	}
 	avl.dump();
 
-	int* j = avl.find_element(5);
-	if (j == nullptr) {
+	auto j = avl.find(1);
+	if (j == avl.end()) {
 		std::cout << "didn't found\n";
 	}
 	else{
