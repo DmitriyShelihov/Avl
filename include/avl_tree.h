@@ -153,11 +153,16 @@ T _Avl_node<T>::left_elem() {
 template <typename T>
 void _Avl_node<T>::pop() {
 	if (height == 0) {
-		delete &_value;
-		height = -1;
+		_datalist->erase(_value);
+		// _value = _datalist->end();
+		// height = -1;
+		std::cout << "deleting\n";
+		delete this;
+		std::cout << "deleted\n";
 		return;
+
 	} else if (NODE_H(left) == -1 && NODE_H(right) != -1) {
-		T save_elem = _value;
+		ListIt save_elem = _value;
 		_value = right->_value;
 		right->_value = save_elem;
 
@@ -229,7 +234,14 @@ void _Avl_node<T>::node_dump(int h) {
 	for (int i = 0; i < h; ++i) {
 		std::cout << "          ";
 	}
-	print_elem(*_value);
+	
+	if (_value != _datalist->end()) {
+		print_elem(*_value);
+	}
+	else {
+		std::cout << "bad";
+	}
+
 	std::cout << "(" << height << ")\n";
 	if (left != nullptr) 
 		left->node_dump(h+1);

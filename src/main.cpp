@@ -23,13 +23,15 @@ int main() {
 	}
 	avl.dump();
 
-	auto j = avl.find(1);
-	if (j == avl.end()) {
-		std::cout << "didn't found\n";
-	}
-	else{
-		std::cout << *j << '\n';
-	}
+	avl.pop();
+	avl.dump();
+	// auto j = avl.find(1);
+	// if (j == avl.end()) {
+	// 	std::cout << "didn't found\n";
+	// }
+	// else{
+	// 	std::cout << *j << '\n';
+	// }
 	
 	return 0;
 }
