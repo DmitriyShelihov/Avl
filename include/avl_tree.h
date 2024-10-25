@@ -267,7 +267,6 @@ typename std::list<T>::iterator _Avl_node<T>::find_element(T val, std::function<
 	int r = 0;
 	for(_Avl_node* node = this; node != nullptr;){
 		r = compare_func(*(node->_value), val);
-		// std::cout << "comparing " << node->_value << " and " << val << " res: " << r << "\n";
 		switch (r)
 		{
 			case 0: return node->_value;	break;

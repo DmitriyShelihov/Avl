@@ -15,6 +15,8 @@ FetchContent_MakeAvailable(googletest)
 
 enable_testing() 
 
+set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
+
 add_executable(
   MAIN
   src/main.cpp
