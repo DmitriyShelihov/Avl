@@ -6,7 +6,8 @@
 #define NODE_H(x) (((x)==nullptr)?-1:((x)->height))
 
 template <typename T> class _Avl_node {
-	private:
+	// private:
+	public:
 		using ListIt = typename std::list<T>::iterator;
 		
 		ListIt _value;
@@ -23,12 +24,13 @@ template <typename T> class _Avl_node {
 		void _pop_min(_Avl_node<T>** tree, ListIt* ret_val);
 		void _pop_max(_Avl_node<T>** tree, ListIt* ret_val);
 
-	public:
+	// public:
 		_Avl_node(ListIt value, std::list<T>* datalist): _value(value), _datalist(datalist) {};
 		ListIt pop_min();
 		ListIt pop_max();
 		T min();
 		T max();
+		T get_value() {return *_value;};
 		void insert(ListIt value, std::function<int(T, T)> compare_func);
 		ListIt find_element(T val, std::function<int(T, T)> compare_func);
 		void node_dump(int h);
@@ -59,6 +61,8 @@ template <typename T> class Avl{
 		T max() {
 			return tree->max();
 		}
+
+		int get_count(T min, T max);
 
 		ListIt end(){
 			return _data_list.end();
@@ -243,13 +247,19 @@ typename std::list<T>::iterator _Avl_node<T>::pop_min() {
 
 template <typename T>
 void _Avl_node<T>::insert(ListIt value, std::function<int(T, T)> compare_func) { 
-	if (compare_func(*_value, *value) <= 0) {
+	if (compare_func(*_value, *value) < 0) {
 		if (right == nullptr) {
 			height = 1;
 			right = new _Avl_node(value, _datalist);
-		} else 
+		} 
+		else 
 			right->insert(value, compare_func);
-	} else {
+	}
+	else if(compare_func(*_value, *value) == 0){
+		_datalist->erase(value);
+		return;
+	}
+	else {
 		if (left == nullptr) {
 			height = 1;
 			left = new _Avl_node(value, _datalist);
@@ -304,4 +314,49 @@ void _Avl_node<T>::node_dump(int h) {
 	std::cout << "(" << height << ")\n";
 	if (left != nullptr) 
 		left->node_dump(h+1);
+}
+
+template <typename T>
+int Avl<T>::get_count(T min, T max){
+
+	if(min > max) {
+		T temp = min;
+		min = max;
+		max = temp;
+	}
+
+	std::list<_Avl_node<T>*> queue;
+	_Avl_node<T>* current_node;
+	queue.push_back(tree);
+
+	int counter = 0;
+
+	while(queue.begin() != queue.end()){
+		current_node = *(queue.begin());
+
+		if(current_node == nullptr) {
+			queue.pop_front();
+			continue;
+		}
+
+		// std::cout << "cheking: " << current_node->get_value();	
+		if(current_node->get_value() < min) {
+			queue.push_back(current_node->right);
+			// std::cout << "pushed r\n";
+		}
+		else if (current_node->get_value() > max){
+			queue.push_back(current_node->left);
+			// std::cout << "pushed l\n";
+		}
+		else {
+			counter++;
+			queue.push_back(current_node->left);
+			queue.push_back(current_node->right);
+			// std::cout << "pushed both";
+		}
+
+		// std::cout << '\n';
+		queue.pop_front();
+	}
+	return counter;
 }
