@@ -44,7 +44,7 @@ template <typename T> class Avl{
 		std::function<int(T, T)> _compare_func;
 		std::list<T> _data_list;
 	public:
-		Avl(T value, std::function<int(T, T)> compare_func): _compare_func(compare_func) {};
+		Avl(std::function<int(T, T)> compare_func): _compare_func(compare_func) {};
 		
 		T pop_min() {
 			return *(tree->pop_min());
