@@ -34,6 +34,7 @@ int main(){
                 std::cout << avl.get_count(val1, val2) << ' ';
             }
         }
+
         else {
             return 0;
         }
