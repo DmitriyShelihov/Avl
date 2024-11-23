@@ -46,6 +46,20 @@ add_executable(AVL src/main.cpp)
 target_link_libraries(AVL avl_lib)
 
 ###################
+#Building stress tests
+
+set(
+  Stress_test_files
+  src/stress_test.cpp
+)
+
+add_library(stress_lib STATIC ${Stress_test_files})
+target_include_directories(stress_lib PUBLIC include/)
+
+add_executable(Stress src/stress_test.cpp)
+target_link_libraries(Stress stress_lib)
+
+###################
 #Building tests
 include(FetchContent)
 FetchContent_Declare(
