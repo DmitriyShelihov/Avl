@@ -12,29 +12,26 @@ int compare(int a, int b) {
 
 int main(){
     Avl<int> avl(compare);
-    int val1 = 0;
-    int val2 = 0;
+    int val1, val2;
     char command = '\0';
     
-    while(std::cin.good()){
+    while (std::cin.good()){
         std::cin >> command;
 
-        if(command == 'k'){
+        if (command == 'k'){
             std::cin >> val1;
             avl.insert(val1);
         }
-        else if(command == 'q'){
-            std::cin >> val1;
-            std::cin >> val2;
+        else if (command == 'q'){
+            std::cin >> val1 >> val2;
 
-            if(val1 > val2){
+            if (val1 > val2){
                 std::cout << 0 << ' ';
             }
             else {
                 std::cout << avl.get_count(val1, val2) << ' ';
             }
         }
-
         else {
             return 0;
         }
