@@ -17,6 +17,7 @@ int main(){
     char command = '\0';
     
     while(std::cin.good()){
+        command = '\0';
         std::cin >> command;
 
         if(command == 'k'){
@@ -34,9 +35,10 @@ int main(){
                 std::cout << avl.get_count(val1, val2) << ' ';
             }
         }
-
         else {
-            return 0;
+            break;
         }
     }
+    std::cout << '\n';
+    return 0;
 }
