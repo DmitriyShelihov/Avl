@@ -12,10 +12,11 @@ int compare(int a, int b) {
 
 int main(){
     Avl<int> avl(compare);
-    int val1, val2;
+    int val1, val2 = 0;
     char command = '\0';
     
     while (std::cin.good()){
+        command = '\0';
         std::cin >> command;
 
         if (command == 'k'){
